@@ -1,41 +1,33 @@
+require 'csv'
+
 class Student
   attr_accessor :first_name, :last_name, :age
 
   def initialize(first_name, last_name, age)
     @first_name = first_name
-    @last_name = last_name
-    @age = age
+    @last_name  = last_name
+    @age        = age
   end
 
-  def first_name
-    @first_name
+  def save
+    File.open('students.csv', 'a') do |student|
+      student.write(self.to_csv)
+    end
+    puts "The record was written to the student file."
   end
 
-  def first_name=(first_name)
-    @first_name = first_name
-  end
-
-  def last_name
-    @last_name
-  end
-
-  def last_name=(last_name)
-    @last_name = last_name
-  end
-
-  def age
-    @age
-  end
-
-  def age=(age)
-    @age = age
-  end
-
-  def full_name
-    puts "The student name is #{@first_name} #{@last_name} and they are #{@age} years old."
+  def to_csv
+    CSV.generate do |csv|
+      csv << [first_name, last_name, age]
+    end
   end
 end
 
-student = Student.new("Nick", "Eglin", 24)
-
-student.full_name
+puts "Please enter your First Name: "
+first_name = gets.chomp
+puts "Please enter your Last Name: "
+last_name = gets.chomp
+puts "Please enter your age: "
+age = gets.chomp
+student = Student.new(first_name, last_name, age)
+p student.save
